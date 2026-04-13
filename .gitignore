@@ -1,0 +1,8 @@
+季節と太陽高度シミュレーター.md
+node_modules
+dist
+dist-ssr
+*.local
+.vite
+.DS_Store
+*.tsbuildinfo

@@ -1,0 +1,8 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+// GitHub Pages base path: /<repo-name>/
+export default defineConfig({
+  base: '/solar-altitude-sim/',
+  plugins: [react()],
+});
