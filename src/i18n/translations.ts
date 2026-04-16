@@ -66,6 +66,7 @@ export interface Dict {
   noteDisclaimer: string;
   reset: string;
   now: string;
+  nowDisabledCustom: string;
 }
 
 export const TRANSLATIONS: Record<Lang, Dict> = {
@@ -147,6 +148,7 @@ export const TRANSLATIONS: Record<Lang, Dict> = {
     noteDisclaimer: '※ 本教材は原理理解を目的とした近似計算です。実測値や予報には使用できません。',
     reset: 'リセット',
     now: '現在時刻',
+    nowDisabledCustom: '※ カスタムでは経度が不明なため無効',
   },
   en: {
     appTitle: 'Seasons & Solar Altitude Simulator',
@@ -226,5 +228,6 @@ export const TRANSLATIONS: Record<Lang, Dict> = {
     noteDisclaimer: 'Educational approximation — not for navigation or forecasting.',
     reset: 'Reset',
     now: 'Now',
+    nowDisabledCustom: 'Disabled: longitude unknown in custom mode',
   },
 };

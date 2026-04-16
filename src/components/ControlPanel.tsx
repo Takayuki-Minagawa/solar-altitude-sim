@@ -127,17 +127,15 @@ export function ControlPanel() {
       <div className="control-row">
         <button
           className="pill"
+          disabled={!state.presetId}
+          title={!state.presetId ? t.nowDisabledCustom : undefined}
           onClick={() => {
             const now = new Date();
             const preset = LOCATION_PRESETS.find((p) => p.id === state.presetId);
-            // Longitude: use the preset's if known, else infer from the device
-            // timezone offset (15°/hour). Then convert device UTC -> local mean
-            // solar time at that longitude so the calculation's `hour` axis is
-            // consistent across locations.
-            const longitude = preset ? preset.longitude : -now.getTimezoneOffset() / 4;
+            if (!preset) return;
             const utcHour =
               now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
-            let localHour = utcHour + longitude / 15;
+            let localHour = utcHour + preset.longitude / 15;
             let doy = dayOfYear(now.getUTCMonth() + 1, now.getUTCDate());
             while (localHour < 0) { localHour += 24; doy -= 1; }
             while (localHour >= 24) { localHour -= 24; doy += 1; }
@@ -148,6 +146,11 @@ export function ControlPanel() {
         >
           {t.now}
         </button>
+        {!state.presetId && (
+          <span style={{ fontSize: 10, color: 'var(--fg-muted)', marginLeft: 6 }}>
+            {t.nowDisabledCustom}
+          </span>
+        )}
       </div>
     </>
   );

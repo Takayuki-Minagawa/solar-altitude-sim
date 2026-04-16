@@ -30,10 +30,22 @@ export function meridianAltitudeDeg(latDeg: number, declDeg: number): number {
   return 90 - Math.abs(latDeg - declDeg);
 }
 
-// Half-day angle ω0 (degrees). Returns null when the sun never rises/sets (polar day/night).
+// Half-day angle ω0 (degrees). Returns null when the sun never rises/sets (polar day/night),
+// or when the result is undefined (pole + equinox: sun grazes the horizon all day).
 export function halfDayAngleDeg(latDeg: number, declDeg: number): number | null {
   const phi = latDeg * DEG;
   const dec = declDeg * DEG;
+
+  // At the poles cos(φ) ≈ 0, making tan(φ) huge / infinite.
+  // When declination is also near zero the product −tan(φ)·tan(δ) is an
+  // indeterminate 0·∞ form. Handle the pole explicitly:
+  //   sun altitude at the pole = |δ|, so check declination sign directly.
+  if (Math.abs(Math.cos(phi)) < 1e-10) {
+    if (Math.abs(declDeg) < 0.01) return null; // equinox at pole — undefined rise/set
+    // positive decl → above horizon at N pole, below at S pole
+    return (declDeg > 0) === (latDeg > 0) ? 180 : 0;
+  }
+
   const cosOmega = -Math.tan(phi) * Math.tan(dec);
   if (cosOmega >= 1) return 0; // polar night — never rises
   if (cosOmega <= -1) return 180; // polar day — never sets

@@ -41,12 +41,35 @@ const SimCtx = createContext<Ctx | null>(null);
 
 const STORAGE_KEY = 'solar-altitude-sim.v1';
 
+function sanitize(parsed: Record<string, unknown>): Partial<SimState> {
+  const out: Partial<SimState> = {};
+
+  if (parsed.lang === 'ja' || parsed.lang === 'en') out.lang = parsed.lang;
+  if (parsed.theme === 'light' || parsed.theme === 'dark') out.theme = parsed.theme;
+
+  if (typeof parsed.latitude === 'number' && isFinite(parsed.latitude))
+    out.latitude = Math.max(-90, Math.min(90, parsed.latitude));
+  if (typeof parsed.doy === 'number' && isFinite(parsed.doy))
+    out.doy = Math.max(1, Math.min(365, Math.round(parsed.doy)));
+  if (typeof parsed.hour === 'number' && isFinite(parsed.hour))
+    out.hour = Math.max(0, Math.min(24, parsed.hour));
+  if (typeof parsed.axialTilt === 'number' && isFinite(parsed.axialTilt))
+    out.axialTilt = Math.max(0, Math.min(45, parsed.axialTilt));
+  if (typeof parsed.speed === 'number' && [0.5, 1, 2, 4, 8].includes(parsed.speed))
+    out.speed = parsed.speed;
+
+  if (parsed.presetId === null || typeof parsed.presetId === 'string')
+    out.presetId = parsed.presetId as string | null;
+
+  return out;
+}
+
 function loadInitial(): SimState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_STATE;
-    const parsed = JSON.parse(raw) as Partial<SimState>;
-    return { ...DEFAULT_STATE, ...parsed, playing: false };
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    return { ...DEFAULT_STATE, ...sanitize(parsed), playing: false };
   } catch {
     return DEFAULT_STATE;
   }
