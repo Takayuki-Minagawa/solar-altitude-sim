@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, useCallback, u
 import type { ReactNode } from 'react';
 import type { Lang } from '../i18n/translations';
 import { TRANSLATIONS } from '../i18n/translations';
+import { LOCATION_PRESETS } from '../data/presets';
 
 export type Theme = 'light' | 'dark';
 
@@ -58,8 +59,11 @@ function sanitize(parsed: Record<string, unknown>): Partial<SimState> {
   if (typeof parsed.speed === 'number' && [0.5, 1, 2, 4, 8].includes(parsed.speed))
     out.speed = parsed.speed;
 
-  if (parsed.presetId === null || typeof parsed.presetId === 'string')
-    out.presetId = parsed.presetId as string | null;
+  if (parsed.presetId === null) {
+    out.presetId = null;
+  } else if (typeof parsed.presetId === 'string' && LOCATION_PRESETS.some((p) => p.id === parsed.presetId)) {
+    out.presetId = parsed.presetId;
+  }
 
   return out;
 }

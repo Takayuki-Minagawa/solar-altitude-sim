@@ -34,6 +34,7 @@ export interface Dict {
   deg: string;
   polarDay: string;
   polarNight: string;
+  polarHorizon: string;
   annualDayLength: string;
   annualMeridian: string;
   seasonalPaths: string;
@@ -54,7 +55,7 @@ export interface Dict {
     decl: number;
     meridianAlt: number;
     dayLen: number;
-    polar: 'day' | 'night' | null;
+    polar: 'day' | 'night' | 'horizon' | null;
     axialTilt: number;
   }) => string;
   quizQuestion: string;
@@ -104,6 +105,7 @@ export const TRANSLATIONS: Record<Lang, Dict> = {
     deg: '°',
     polarDay: '白夜（太陽が沈まない）',
     polarNight: '極夜（太陽が昇らない）',
+    polarHorizon: '太陽が地平線上を周回（極点の分点）',
     annualDayLength: '昼の長さ（年間）',
     annualMeridian: '南中高度（年間）',
     seasonalPaths: '季節別 日周軌跡',
@@ -126,10 +128,12 @@ export const TRANSLATIONS: Record<Lang, Dict> = {
         ? '太陽は一日中地平線より下にあります（極夜）。'
         : polar === 'day'
           ? '太陽は一日中沈みません（白夜）。'
-          : `南中高度 h = 90° − |φ − δ| = ${meridianAlt.toFixed(1)}°`;
+          : polar === 'horizon'
+            ? '太陽は一日中地平線上を周回しています。'
+            : `南中高度 h = 90° − |φ − δ| = ${meridianAlt.toFixed(1)}°`;
       const dayTxt = polar === 'day'
         ? '昼の長さは 24 時間。'
-        : polar === 'night'
+        : polar === 'night' || polar === 'horizon'
           ? '昼の長さは 0 時間。'
           : `昼の長さは約 ${dayLen.toFixed(1)} 時間です。`;
       const tiltTxt = Math.abs(axialTilt - 23.44) < 0.01
@@ -184,6 +188,7 @@ export const TRANSLATIONS: Record<Lang, Dict> = {
     deg: '°',
     polarDay: 'Polar day (sun never sets)',
     polarNight: 'Polar night (sun never rises)',
+    polarHorizon: 'Sun circles the horizon (pole at equinox)',
     annualDayLength: 'Day length over a year',
     annualMeridian: 'Noon altitude over a year',
     seasonalPaths: 'Seasonal sun paths',
@@ -206,10 +211,12 @@ export const TRANSLATIONS: Record<Lang, Dict> = {
         ? 'The Sun stays below the horizon all day (polar night).'
         : polar === 'day'
           ? 'The Sun never sets (polar day).'
-          : `noon altitude h = 90° − |φ − δ| = ${meridianAlt.toFixed(1)}°.`;
+          : polar === 'horizon'
+            ? 'The Sun circles the horizon all day.'
+            : `noon altitude h = 90° − |φ − δ| = ${meridianAlt.toFixed(1)}°.`;
       const dayTxt = polar === 'day'
         ? 'Day length is 24 h.'
-        : polar === 'night'
+        : polar === 'night' || polar === 'horizon'
           ? 'Day length is 0 h.'
           : `Day length is about ${dayLen.toFixed(1)} h.`;
       const tiltTxt = Math.abs(axialTilt - 23.44) < 0.01

@@ -56,12 +56,12 @@ export interface DayLengthInfo {
   hours: number; // 0..24
   sunriseHour: number | null; // local solar time
   sunsetHour: number | null;
-  polar: 'day' | 'night' | null;
+  polar: 'day' | 'night' | 'horizon' | null;
 }
 
 export function dayLengthInfo(latDeg: number, declDeg: number): DayLengthInfo {
   const omega = halfDayAngleDeg(latDeg, declDeg);
-  if (omega === null) return { hours: 0, sunriseHour: null, sunsetHour: null, polar: 'night' };
+  if (omega === null) return { hours: 0, sunriseHour: null, sunsetHour: null, polar: 'horizon' };
   if (omega === 0) return { hours: 0, sunriseHour: null, sunsetHour: null, polar: 'night' };
   if (omega === 180) return { hours: 24, sunriseHour: null, sunsetHour: null, polar: 'day' };
   const hours = (2 * omega) / 15;

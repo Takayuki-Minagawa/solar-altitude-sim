@@ -143,7 +143,10 @@ function Readouts() {
 
   const fmtH = (h: number | null) => (h == null ? '—' : formatHourHM(h));
   const polarLabel =
-    dayInfo.polar === 'day' ? t.polarDay : dayInfo.polar === 'night' ? t.polarNight : null;
+    dayInfo.polar === 'day' ? t.polarDay
+      : dayInfo.polar === 'night' ? t.polarNight
+      : dayInfo.polar === 'horizon' ? t.polarHorizon
+      : null;
 
   return (
     <div className="readouts">
