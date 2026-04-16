@@ -63,6 +63,10 @@ function sanitize(parsed: Record<string, unknown>): Partial<SimState> {
     out.presetId = null;
   } else if (typeof parsed.presetId === 'string' && LOCATION_PRESETS.some((p) => p.id === parsed.presetId)) {
     out.presetId = parsed.presetId;
+  } else {
+    // Unknown or missing presetId — fall back to custom mode so the
+    // restored latitude is not misleadingly paired with a default preset.
+    out.presetId = null;
   }
 
   return out;
